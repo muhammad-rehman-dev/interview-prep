@@ -1,0 +1,4 @@
+<%= render "questions/accordion_item",
+           question: question,
+           completed: local_assigns.fetch(:completed, false),
+           bookmarked: local_assigns.fetch(:bookmarked, false) %>

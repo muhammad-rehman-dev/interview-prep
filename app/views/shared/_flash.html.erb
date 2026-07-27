@@ -1,0 +1,16 @@
+<% if notice.present? || alert.present? %>
+  <div class="flash-stack" data-turbo-temporary>
+    <% if notice.present? %>
+      <div class="flash flash-notice" role="status">
+        <span><%= notice %></span>
+        <button type="button" class="btn-ghost" onclick="this.closest('.flash').remove()" aria-label="Dismiss">✕</button>
+      </div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="flash flash-alert" role="alert">
+        <span><%= alert %></span>
+        <button type="button" class="btn-ghost" onclick="this.closest('.flash').remove()" aria-label="Dismiss">✕</button>
+      </div>
+    <% end %>
+  </div>
+<% end %>

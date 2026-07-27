@@ -1,0 +1,68 @@
+<% page_title "#{@question.title} · #{@company.name}" %>
+
+<section class="company-question-show">
+  <header class="page-header">
+    <p class="page-eyebrow">
+      <%= link_to "Companies", companies_path, class: "text-cyan-400/80 hover:text-cyan-300" %>
+      ·
+      <%= link_to @company.name, company_path(@company), class: "text-cyan-400/80 hover:text-cyan-300" %>
+    </p>
+    <div class="company-q-badges" style="margin-bottom: 0.75rem;">
+      <%= difficulty_badge(@question.difficulty) %>
+      <% if @question.interview_round.present? %>
+        <span class="badge badge-type"><%= @question.interview_round.to_s.humanize %></span>
+      <% end %>
+    </div>
+    <h1 class="page-title" style="font-size: clamp(1.35rem, 2vw, 1.75rem);"><%= @question.title %></h1>
+    <p class="page-lead"><%= @question.source %> · <%= @question.estimated_minutes || 8 %> min</p>
+  </header>
+
+  <div class="panel">
+    <% if @question.body.present? %>
+      <h2 class="panel-title">Context</h2>
+      <%= format_rich_text(@question.body) %>
+    <% end %>
+
+    <h2 class="panel-title">Best answer</h2>
+    <%= format_rich_text(@question.best_answer.presence || @question.answer) %>
+
+    <% if @question.explanation.present? %>
+      <h2 class="panel-title">Explanation</h2>
+      <%= format_rich_text(@question.explanation) %>
+    <% end %>
+
+    <% if @question.common_mistakes.present? %>
+      <h2 class="panel-title">Common mistakes</h2>
+      <%= format_rich_text(@question.common_mistakes) %>
+    <% end %>
+
+    <% if @question.follow_up_list.any? %>
+      <h2 class="panel-title">Follow-ups</h2>
+      <ul class="company-q-followups">
+        <% @question.follow_up_list.each do |fu| %>
+          <li><%= fu %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <% if @question.tag_names.any? %>
+      <p class="company-card-meta" style="margin-top: 1rem;">
+        Tags: <%= @question.tag_names.join(" · ") %>
+      </p>
+    <% end %>
+  </div>
+
+  <% if @related.any? %>
+    <div class="panel" style="margin-top: 1rem;">
+      <h2 class="panel-title">Related in this round</h2>
+      <ul class="list-plain">
+        <% @related.each do |q| %>
+          <li class="list-row">
+            <%= link_to q.title, company_question_path(@company, q) %>
+            <%= difficulty_badge(q.difficulty) %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</section>

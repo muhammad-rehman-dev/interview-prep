@@ -1,0 +1,51 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyText
+  body: MyText
+  answer: MyText
+  best_answer: MyText
+  alternative_answer: MyText
+  explanation: MyText
+  common_mistakes: MyText
+  follow_ups: MyText
+  theory: MyText
+  practical: MyText
+  difficulty: MyString
+  interview_type: MyString
+  category: one
+  company: MyString
+  source: MyString
+  tags_cache: MyString
+  frequency_score: 1.5
+  estimated_minutes: 1
+  confidence_score: 1.5
+  references_text: MyText
+  related_slugs: MyText
+  slug: MyString
+  bookmarked_count: 1
+
+two:
+  title: MyText
+  body: MyText
+  answer: MyText
+  best_answer: MyText
+  alternative_answer: MyText
+  explanation: MyText
+  common_mistakes: MyText
+  follow_ups: MyText
+  theory: MyText
+  practical: MyText
+  difficulty: MyString
+  interview_type: MyString
+  category: two
+  company: MyString
+  source: MyString
+  tags_cache: MyString
+  frequency_score: 1.5
+  estimated_minutes: 1
+  confidence_score: 1.5
+  references_text: MyText
+  related_slugs: MyText
+  slug: MyString
+  bookmarked_count: 1

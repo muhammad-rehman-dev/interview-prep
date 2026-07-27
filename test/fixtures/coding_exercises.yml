@@ -1,0 +1,39 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  slug: MyString
+  problem: MyText
+  requirements: MyText
+  expected_api: MyText
+  hints: MyText
+  step_by_step: MyText
+  complete_solution: MyText
+  best_practices: MyText
+  time_complexity: MyString
+  space_complexity: MyString
+  senior_improvements: MyText
+  follow_ups: MyText
+  difficulty: MyString
+  category: MyString
+  estimated_minutes: 1
+  position: 1
+
+two:
+  title: MyString
+  slug: MyString
+  problem: MyText
+  requirements: MyText
+  expected_api: MyText
+  hints: MyText
+  step_by_step: MyText
+  complete_solution: MyText
+  best_practices: MyText
+  time_complexity: MyString
+  space_complexity: MyString
+  senior_improvements: MyText
+  follow_ups: MyText
+  difficulty: MyString
+  category: MyString
+  estimated_minutes: 1
+  position: 1

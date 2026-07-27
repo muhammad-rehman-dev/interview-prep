@@ -1,0 +1,88 @@
+<% page_title "Quiz" %>
+
+<section class="mx-auto w-full max-w-3xl">
+  <header class="page-header">
+    <p class="page-eyebrow">Check yourself</p>
+    <h1 class="page-title">Quiz</h1>
+    <p class="page-lead">Multiple choice rounds with instant scoring.</p>
+  </header>
+
+  <% if @submitted %>
+    <div class="panel mb-6 text-center">
+      <p class="page-eyebrow">Your score</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-cyan-300">
+        <%= @score %> / <%= @total || @questions.size %>
+      </p>
+      <p class="mt-2 text-sm text-slate-500">
+        <% total = (@total || @questions.size).to_i %>
+        <%= total.zero? ? "No questions graded." : "#{(100.0 * @score / total).round}% correct" %>
+      </p>
+      <div class="mt-4">
+        <%= link_to "Try another quiz", quiz_path, class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @questions.blank? %>
+    <%= empty_state(
+          title: "No quiz questions yet",
+          body: "Seed quiz content to start a multiple-choice round.",
+          cta: "Back to dashboard",
+          href: dashboard_path
+        ) %>
+  <% else %>
+    <%= form_with url: quiz_path, method: :post, local: true, class: "space-y-4" do %>
+      <% @questions.each_with_index do |question, index| %>
+        <%= hidden_field_tag "question_ids[]", question.id %>
+        <fieldset class="panel">
+          <legend class="mb-3 w-full">
+            <span class="mr-2 text-xs font-semibold uppercase tracking-wider text-cyan-400/80">Q<%= index + 1 %></span>
+            <span class="text-base font-medium text-slate-100"><%= question.prompt %></span>
+          </legend>
+
+          <div class="mb-4 flex flex-wrap gap-2">
+            <%= difficulty_badge(question.difficulty) %>
+            <% if question.category.present? %>
+              <span class="filter-chip"><%= question.category %></span>
+            <% end %>
+          </div>
+
+          <div class="space-y-2">
+            <% question.option_list.each_with_index do |option, option_index| %>
+              <%
+                selected = @answers[question.id.to_s].to_s == option_index.to_s
+                correct = @submitted && option_index == question.correct_index
+                wrong = @submitted && selected && !correct
+                option_classes = [
+                  "flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-2.5 transition",
+                  (correct ? "border-emerald-500/50 bg-emerald-500/10" : nil),
+                  (wrong ? "border-rose-500/50 bg-rose-500/10" : nil),
+                  (!@submitted && selected ? "border-cyan-500/40 bg-cyan-500/10" : nil),
+                  (!correct && !wrong ? "border-slate-800 hover:border-slate-700" : nil)
+                ].compact.join(" ")
+              %>
+              <label class="<%= option_classes %>">
+                <%= radio_button_tag "answers[#{question.id}]", option_index, selected,
+                      disabled: @submitted,
+                      class: "mt-1 accent-cyan-400" %>
+                <span class="text-sm text-slate-200"><%= option %></span>
+              </label>
+            <% end %>
+          </div>
+
+          <% if @submitted && question.explanation.present? %>
+            <div class="mt-4 border-t border-slate-800 pt-4">
+              <%= format_rich_text(question.explanation) %>
+            </div>
+          <% end %>
+        </fieldset>
+      <% end %>
+
+      <% unless @submitted %>
+        <div class="pt-2">
+          <%= submit_tag "Submit quiz", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</section>

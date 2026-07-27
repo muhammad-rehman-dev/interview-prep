@@ -1,0 +1,39 @@
+<% page_title "Rails → Node Cheatsheet" %>
+
+<section class="mx-auto w-full max-w-5xl">
+  <header class="page-header">
+    <p class="page-eyebrow">Translate</p>
+    <h1 class="page-title">Rails → Node / NestJS</h1>
+    <p class="page-lead">Side-by-side mental models for backend concepts you already know in Rails.</p>
+  </header>
+
+  <% if @grouped.blank? %>
+    <%= empty_state(
+          title: "Cheatsheet is empty",
+          body: "Seed Rails-to-Node mappings to unlock three-column comparisons.",
+          cta: "Back home",
+          href: root_path
+        ) %>
+  <% else %>
+    <% @grouped.each do |category, entries| %>
+      <section class="mb-8">
+        <h2 class="panel-title mb-3"><%= category %></h2>
+        <ul class="list-plain divide-y divide-slate-800 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+          <% entries.each do |entry| %>
+            <li>
+              <%= link_to cheatsheet_entry_path(entry.slug), class: "list-row px-4 py-4 transition hover:bg-slate-900/70" do %>
+                <div class="min-w-0">
+                  <h3 class="text-base font-medium text-slate-100"><%= entry.title %></h3>
+                  <% if entry.rails_concept.present? %>
+                    <p class="mt-1 text-sm text-slate-500"><%= truncate(entry.rails_concept, length: 120) %></p>
+                  <% end %>
+                </div>
+                <span class="shrink-0 text-sm text-slate-500">Compare →</span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+  <% end %>
+</section>

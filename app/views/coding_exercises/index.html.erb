@@ -1,0 +1,51 @@
+<% page_title "Live Coding" %>
+
+<section class="mx-auto w-full max-w-5xl">
+  <header class="page-header">
+    <p class="page-eyebrow">Practice</p>
+    <h1 class="page-title">Live coding</h1>
+    <p class="page-lead">Backend API drills with requirements, hints, and senior-level walkthroughs.</p>
+  </header>
+
+  <div class="mb-6 flex flex-wrap gap-2">
+    <%= link_to "All", coding_exercises_path, class: "filter-chip #{params[:difficulty].blank? && params[:category].blank? ? 'is-active' : ''}" %>
+    <% @difficulties.each do |difficulty| %>
+      <%= link_to difficulty.capitalize,
+            coding_exercises_path(difficulty: difficulty, category: params[:category]),
+            class: "filter-chip #{params[:difficulty] == difficulty ? 'is-active' : ''}" %>
+    <% end %>
+    <% @categories.each do |category| %>
+      <%= link_to category,
+            coding_exercises_path(category: category, difficulty: params[:difficulty]),
+            class: "filter-chip #{params[:category] == category ? 'is-active' : ''}" %>
+    <% end %>
+  </div>
+
+  <% if @exercises.any? %>
+    <ul class="list-plain divide-y divide-slate-800 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+      <% @exercises.each do |exercise| %>
+        <li>
+          <%= link_to coding_exercise_path(exercise.slug), class: "list-row px-4 py-4 transition hover:bg-slate-900/70" do %>
+            <div class="min-w-0">
+              <h2 class="text-base font-medium text-slate-100"><%= exercise.title %></h2>
+              <p class="mt-1 text-sm text-slate-500">
+                <% parts = [] %>
+                <% parts << exercise.category if exercise.category.present? %>
+                <% parts << "#{exercise.estimated_minutes} min" if exercise.estimated_minutes.present? %>
+                <%= parts.join(" · ") %>
+              </p>
+            </div>
+            <%= difficulty_badge(exercise.difficulty) %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <%= empty_state(
+          title: "No coding exercises yet",
+          body: "Seed the database or clear filters to see live coding drills.",
+          cta: "Clear filters",
+          href: coding_exercises_path
+        ) %>
+  <% end %>
+</section>

@@ -1,0 +1,111 @@
+<% page_title "Mock Session" %>
+
+<section class="mx-auto w-full max-w-3xl">
+  <header class="page-header">
+    <p class="page-eyebrow">Live mode</p>
+    <h1 class="page-title">Mock session</h1>
+    <p class="page-lead">One question at a time. Think out loud, then reveal and move on.</p>
+  </header>
+
+  <div class="mb-4 flex flex-wrap gap-2">
+    <%= link_to "Random", mock_session_path(mode: "random"), class: "filter-chip #{@mode == 'random' ? 'is-active' : ''}" %>
+    <%= link_to "By difficulty", mock_session_path(mode: "difficulty", difficulty: @selected_difficulty), class: "filter-chip #{@mode == 'difficulty' ? 'is-active' : ''}" %>
+    <%= link_to "By company", mock_session_path(mode: "company", company: @selected_company), class: "filter-chip #{@mode == 'company' ? 'is-active' : ''}" %>
+  </div>
+
+  <% if @mode == "difficulty" %>
+    <div class="mb-6 flex flex-wrap gap-2">
+      <% @difficulties.each do |difficulty| %>
+        <%= link_to difficulty.capitalize,
+              mock_session_path(mode: "difficulty", difficulty: difficulty),
+              class: "filter-chip #{@selected_difficulty == difficulty ? 'is-active' : ''}" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @mode == "company" %>
+    <% if @companies.any? %>
+      <div class="mb-6 flex flex-wrap gap-2">
+        <% @companies.first(12).each do |company| %>
+          <%= link_to company,
+                mock_session_path(mode: "company", company: company),
+                class: "filter-chip #{@selected_company == company ? 'is-active' : ''}" %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="mb-6 text-sm text-slate-500">No company tags available yet — falling back to the full question pool.</p>
+    <% end %>
+  <% end %>
+
+  <% if @question.present? %>
+    <article
+      class="panel"
+      data-controller="timer accordion"
+      data-timer-seconds-value="<%= @duration %>"
+      data-accordion-exclusive="true"
+    >
+      <div class="mb-5 flex flex-wrap items-start justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <%= difficulty_badge(@question.difficulty) %>
+          <% if @question.company.present? %>
+            <span class="filter-chip"><%= @question.company %></span>
+          <% end %>
+          <% if @question.category %>
+            <span class="filter-chip"><%= @question.category.name %></span>
+          <% end %>
+        </div>
+        <div class="text-right">
+          <span class="block text-[0.7rem] uppercase tracking-wider text-slate-500">Timer</span>
+          <div class="timer-display text-cyan-300" data-timer-target="display">--:--</div>
+          <div class="mt-2 flex justify-end gap-1">
+            <button type="button" class="btn btn-ghost" data-action="timer#toggle">Start / Pause</button>
+            <button type="button" class="btn btn-ghost" data-action="timer#reset">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="mb-3 text-xl font-semibold tracking-tight text-slate-50"><%= @question.title %></h2>
+      <% if @question.body.present? %>
+        <%= format_rich_text(@question.body) %>
+      <% end %>
+
+      <div class="mt-6">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-accordion-target="trigger"
+          data-action="accordion#toggle"
+          aria-controls="session-answer"
+          aria-expanded="false"
+        >Reveal answer</button>
+
+        <div id="session-answer" class="accordion-panel mt-4" data-accordion-target="panel" hidden>
+          <h3 class="panel-title">Answer</h3>
+          <%= format_rich_text(@question.best_answer.presence || @question.answer) %>
+          <% if @question.explanation.present? %>
+            <h3 class="mt-4 text-xs font-medium uppercase tracking-wider text-slate-500">Explanation</h3>
+            <div class="mt-2"><%= format_rich_text(@question.explanation) %></div>
+          <% end %>
+          <% if @question.follow_ups.present? %>
+            <h3 class="mt-4 text-xs font-medium uppercase tracking-wider text-amber-400/80">Follow-ups</h3>
+            <div class="mt-2"><%= format_rich_text(@question.follow_ups) %></div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="mt-6 border-t border-slate-800 pt-5">
+        <%= button_to "Next question",
+              mock_session_path(mode: @mode, company: @selected_company, difficulty: @selected_difficulty),
+              method: :patch,
+              class: "btn btn-primary" %>
+      </div>
+    </article>
+  <% else %>
+    <%= empty_state(
+          title: "No questions available",
+          body: "Seed the question bank to run a mock session in this mode.",
+          cta: "Browse questions",
+          href: questions_path
+        ) %>
+  <% end %>
+</section>

@@ -1,0 +1,91 @@
+<%
+  difficulties = Array(@filters[:difficulties]).presence || Question::DIFFICULTIES
+  interview_types = Array(@filters[:interview_types]).presence || Question::INTERVIEW_TYPES
+  companies = Array(@filters[:companies])
+  sources = Array(@filters[:sources])
+  categories = Array(@filters[:categories])
+  active_filter_count = [
+    params[:q], params[:difficulty], params[:interview_type], params[:company],
+    params[:source], params[:category], params[:favorite], params[:completed]
+  ].count(&:present?)
+%>
+
+<details class="filters-panel group" <%= "open" if active_filter_count.positive? %>>
+  <summary class="filters-summary">
+    <span>Filters<%= " · #{active_filter_count} active" if active_filter_count.positive? %></span>
+    <span class="filters-summary-hint">Toggle</span>
+  </summary>
+
+  <%= form_with url: questions_path, method: :get, local: true, class: "filters-form", data: { controller: "filter" } do %>
+    <div class="filters-grid">
+      <div class="filters-field filters-field-search">
+        <label for="q" class="filters-label">Search</label>
+        <%= text_field_tag :q, params[:q],
+              id: "q",
+              placeholder: "Titles, answers, tags…",
+              class: "filters-input" %>
+      </div>
+
+      <div class="filters-field">
+        <label for="difficulty" class="filters-label">Difficulty</label>
+        <%= select_tag :difficulty,
+              options_for_select([["All levels", ""]] + difficulties.map { |d| [d.to_s.humanize, d] }, params[:difficulty]),
+              id: "difficulty",
+              class: "filters-input" %>
+      </div>
+
+      <div class="filters-field">
+        <label for="interview_type" class="filters-label">Type</label>
+        <%= select_tag :interview_type,
+              options_for_select([["All types", ""]] + interview_types.map { |t| [t.to_s.humanize, t] }, params[:interview_type]),
+              id: "interview_type",
+              class: "filters-input" %>
+      </div>
+
+      <% if companies.any? %>
+        <div class="filters-field">
+          <label for="company" class="filters-label">Company</label>
+          <%= select_tag :company,
+                options_for_select([["All companies", ""]] + companies.map { |c| [c, c] }, params[:company]),
+                id: "company",
+                class: "filters-input" %>
+        </div>
+      <% end %>
+
+      <% if sources.any? %>
+        <div class="filters-field">
+          <label for="source" class="filters-label">Source</label>
+          <%= select_tag :source,
+                options_for_select([["All sources", ""]] + sources.map { |s| [s, s] }, params[:source]),
+                id: "source",
+                class: "filters-input" %>
+        </div>
+      <% end %>
+
+      <% if categories.any? %>
+        <div class="filters-field">
+          <label for="category" class="filters-label">Category</label>
+          <%= select_tag :category,
+                options_for_select([["All categories", ""]] + categories.map { |c| [c.name, c.slug] }, params[:category]),
+                id: "category",
+                class: "filters-input" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="filters-footer">
+      <label class="filters-check">
+        <%= check_box_tag :favorite, "1", params[:favorite].present? %>
+        <span>Bookmarked</span>
+      </label>
+      <label class="filters-check">
+        <%= check_box_tag :completed, "1", params[:completed].present? %>
+        <span>Completed</span>
+      </label>
+      <div class="filters-actions">
+        <%= submit_tag "Apply", class: "btn btn-primary" %>
+        <%= link_to "Reset", questions_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  <% end %>
+</details>

@@ -1,0 +1,115 @@
+<% page_title "Dashboard" %>
+
+<header class="page-header">
+  <p class="page-eyebrow">Progress</p>
+  <h1 class="page-title">Dashboard</h1>
+  <p class="page-lead">Track completion, pick up where you left off, and push into weak categories.</p>
+</header>
+
+<% stats = @stats || {} %>
+<% completed = stats[:questions_completed].to_i %>
+<% total = stats[:questions_total].to_i %>
+<% pct = percent_complete(completed, total) %>
+
+<section class="stat-row" aria-label="Progress stats">
+  <div class="stat">
+    <span class="stat-label">Questions done</span>
+    <div class="stat-value"><%= completed %><span style="font-size:0.9rem;color:var(--bf-text-muted);font-weight:500;"> / <%= total %></span></div>
+    <div class="stat-meta"><%= pct %>% complete</div>
+    <div style="margin-top:0.75rem;"><%= progress_bar(pct) %></div>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Bookmarks</span>
+    <div class="stat-value"><%= stats[:bookmarks].to_i %></div>
+    <div class="stat-meta">Saved for later</div>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Categories started</span>
+    <div class="stat-value"><%= stats[:categories_started].to_i %></div>
+    <div class="stat-meta">Across the bank</div>
+  </div>
+  <div class="stat">
+    <span class="stat-label">Live coding</span>
+    <div class="stat-value"><%= stats[:coding_exercises].to_i %></div>
+    <div class="stat-meta"><%= stats[:mock_interviews].to_i %> mock interviews</div>
+  </div>
+</section>
+
+<div style="display:grid; gap:1rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));">
+  <section class="panel">
+    <h2 class="panel-title">Continue learning</h2>
+    <% if @continue_learning.present? %>
+      <ul class="list-plain">
+        <% @continue_learning.each do |question| %>
+          <li class="list-row" data-keyboard-item tabindex="0">
+            <div>
+              <%= link_to question.title, question_path(question) %>
+              <div style="margin-top:0.25rem; display:flex; gap:0.35rem; flex-wrap:wrap;">
+                <%= difficulty_badge(question.difficulty) %>
+                <%= interview_type_badge(question.interview_type) %>
+              </div>
+            </div>
+            <% if question.category %>
+              <span style="font-size:0.8rem;color:var(--bf-text-faint);white-space:nowrap;"><%= question.category.name %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+      <div style="margin-top:1rem;">
+        <%= link_to "Open question bank", questions_path, class: "btn btn-primary" %>
+      </div>
+    <% else %>
+      <%= render "shared/empty_state",
+            title: "Nothing in progress yet",
+            body: "Seed the question bank or browse categories to start tracking completion.",
+            cta: "Browse questions",
+            href: questions_path %>
+    <% end %>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel-title">Categories</h2>
+    <% if @category_progress.present? %>
+      <% @category_progress.each do |row| %>
+        <% category = row[:category] %>
+        <%= link_to category_path(category), class: "category-link", data: { keyboard_item: true } do %>
+          <div class="category-link-head">
+            <span class="category-link-name"><%= category.name %></span>
+            <span class="category-link-meta"><%= row[:completed] %> / <%= row[:total] %></span>
+          </div>
+          <%= progress_bar(row[:percent]) %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <%= render "shared/empty_state",
+            title: "No categories yet",
+            body: "Once categories are loaded, progress bars will show up here.",
+            cta: "View categories",
+            href: categories_path %>
+    <% end %>
+  </section>
+</div>
+
+<section class="panel" style="margin-top:1rem;">
+  <h2 class="panel-title">Recently completed</h2>
+  <% if @recent.present? %>
+    <ul class="list-plain">
+      <% @recent.each do |question| %>
+        <li class="list-row">
+          <%= link_to question.title, question_path(question) %>
+          <%= difficulty_badge(question.try(:difficulty)) %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p style="margin:0;color:var(--bf-text-muted);font-size:0.95rem;">
+      Complete a question to build your recent activity trail.
+    </p>
+  <% end %>
+</section>
+
+<section style="margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:0.75rem;">
+  <%= link_to "Continue with questions", questions_path, class: "btn btn-primary" %>
+  <%= link_to "Start a mock interview", mock_interviews_path, class: "btn btn-secondary" %>
+  <%= link_to "Live coding", coding_exercises_path, class: "btn btn-secondary" %>
+</section>

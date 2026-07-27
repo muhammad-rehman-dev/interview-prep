@@ -1,0 +1,87 @@
+<% page_title @mock_interview.title %>
+
+<section class="mx-auto w-full max-w-5xl">
+  <header class="page-header flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <%= link_to "← Mock interviews", mock_interviews_path, class: "mb-3 inline-block text-sm text-cyan-400 hover:text-cyan-300 transition" %>
+      <h1 class="page-title"><%= @mock_interview.title %></h1>
+      <p class="page-lead">
+        <%= @mock_interview.duration_minutes || 75 %> minutes
+        <% if @mock_interview.company_focus.present? %> · <%= @mock_interview.company_focus %><% end %>
+      </p>
+    </div>
+    <%= difficulty_badge(@mock_interview.difficulty) %>
+  </header>
+
+  <% if @mock_interview.introduction.present? %>
+    <div class="panel mb-6">
+      <%= format_rich_text(@mock_interview.introduction) %>
+    </div>
+  <% end %>
+
+  <% items = @mock_interview.mock_interview_items %>
+  <% if items.any? %>
+    <ol class="relative space-y-6 border-l border-slate-800 pl-6">
+      <% items.each_with_index do |item, index| %>
+        <li class="relative">
+          <span class="absolute -left-[1.9rem] flex h-7 w-7 items-center justify-center rounded-full border border-cyan-500/40 bg-slate-950 text-xs font-semibold text-cyan-300" aria-hidden="true">
+            <%= index + 1 %>
+          </span>
+          <div class="panel">
+            <div class="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+              <h2 class="panel-title mb-0"><%= item.section %></h2>
+              <% if item.duration_minutes.present? %>
+                <span class="text-sm text-slate-500"><%= item.duration_minutes %> min</span>
+              <% end %>
+            </div>
+            <%= format_rich_text(item.prompt) %>
+
+            <% if item.expected_answer.present? %>
+              <details class="mt-4 rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2">
+                <summary class="cursor-pointer text-sm font-medium text-cyan-400">Expected answer</summary>
+                <div class="mt-3">
+                  <%= format_rich_text(item.expected_answer) %>
+                </div>
+              </details>
+            <% end %>
+
+            <% if item.follow_ups.present? %>
+              <div class="mt-4 border-t border-slate-800 pt-4">
+                <h3 class="mb-2 text-xs font-medium uppercase tracking-wider text-amber-400/80">Follow-ups</h3>
+                <%= format_rich_text(item.follow_ups) %>
+              </div>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% else %>
+    <%= empty_state(
+          title: "No sections in this mock",
+          body: "This interview timeline has no items yet.",
+          cta: "Back to mocks",
+          href: mock_interviews_path
+        ) %>
+  <% end %>
+
+  <% if @mock_interview.scoring_rubric.present? || @mock_interview.interviewer_notes.present? %>
+    <div class="mt-8 grid gap-4 lg:grid-cols-2">
+      <% if @mock_interview.scoring_rubric.present? %>
+        <aside class="panel">
+          <h2 class="panel-title">Scoring rubric</h2>
+          <%= format_rich_text(@mock_interview.scoring_rubric) %>
+        </aside>
+      <% end %>
+      <% if @mock_interview.interviewer_notes.present? %>
+        <aside class="panel border-amber-500/20">
+          <h2 class="panel-title">Interviewer notes</h2>
+          <%= format_rich_text(@mock_interview.interviewer_notes) %>
+        </aside>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-8">
+    <%= link_to "Start live session", mock_session_path, class: "btn btn-primary" %>
+  </div>
+</section>

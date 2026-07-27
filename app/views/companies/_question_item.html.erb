@@ -1,0 +1,55 @@
+<details class="company-q">
+  <summary class="company-q-summary">
+    <span class="company-q-chevron" aria-hidden="true">▸</span>
+    <span class="company-q-main">
+      <span class="company-q-badges">
+        <%= difficulty_badge(question.difficulty) %>
+        <% if question.interview_round.present? %>
+          <span class="badge badge-type"><%= question.interview_round.to_s.humanize %></span>
+        <% end %>
+      </span>
+      <span class="company-q-title"><%= question.title %></span>
+      <span class="company-q-meta">
+        <%= question.source %>
+        <% if question.estimated_minutes.present? %>
+          · <%= question.estimated_minutes %> min
+        <% end %>
+      </span>
+    </span>
+  </summary>
+
+  <div class="company-q-body">
+    <% if question.body.present? %>
+      <h3 class="company-q-section-label">Context</h3>
+      <%= format_rich_text(question.body) %>
+    <% end %>
+
+    <h3 class="company-q-section-label">Best answer</h3>
+    <%= format_rich_text(question.best_answer.presence || question.answer) %>
+
+    <% if question.explanation.present? %>
+      <h3 class="company-q-section-label">Explanation</h3>
+      <%= format_rich_text(question.explanation) %>
+    <% end %>
+
+    <% if question.common_mistakes.present? %>
+      <h3 class="company-q-section-label">Common mistakes</h3>
+      <%= format_rich_text(question.common_mistakes) %>
+    <% end %>
+
+    <% if question.follow_up_list.any? %>
+      <h3 class="company-q-section-label">Follow-ups</h3>
+      <ul class="company-q-followups">
+        <% question.follow_up_list.each do |fu| %>
+          <li><%= fu %></li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="company-q-actions">
+      <%= link_to "Open full page",
+                  company_question_path(company, question),
+                  class: "btn btn-secondary" %>
+    </div>
+  </div>
+</details>

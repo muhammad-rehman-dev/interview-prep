@@ -1,0 +1,67 @@
+<% page_title @entry.title %>
+
+<section class="mx-auto w-full max-w-6xl">
+  <header class="page-header">
+    <%= link_to "← Cheatsheet", cheatsheet_path, class: "mb-3 inline-block text-sm text-cyan-400 hover:text-cyan-300 transition" %>
+    <p class="page-eyebrow"><%= @entry.category.presence || "General" %></p>
+    <h1 class="page-title"><%= @entry.title %></h1>
+    <% if @entry.rails_concept.present? %>
+      <p class="page-lead"><%= @entry.rails_concept %></p>
+    <% end %>
+  </header>
+
+  <% if @entry.rails_explanation.present? %>
+    <div class="panel mb-6">
+      <h2 class="panel-title">How it works in Rails</h2>
+      <%= format_rich_text(@entry.rails_explanation) %>
+    </div>
+  <% end %>
+
+  <div class="grid gap-4 lg:grid-cols-3">
+    <article class="panel">
+      <h2 class="panel-title text-cyan-300">Rails</h2>
+      <% if @entry.rails_code.present? %>
+        <pre class="code-block" data-lang="ruby"><code><%= @entry.rails_code %></code></pre>
+      <% else %>
+        <p class="text-sm text-slate-500">No Rails snippet.</p>
+      <% end %>
+    </article>
+
+    <article class="panel">
+      <h2 class="panel-title text-amber-300">Node.js</h2>
+      <% if @entry.node_equivalent.present? %>
+        <div class="mb-3"><%= format_rich_text(@entry.node_equivalent) %></div>
+      <% end %>
+      <% if @entry.node_code.present? %>
+        <pre class="code-block" data-lang="javascript"><code><%= @entry.node_code %></code></pre>
+      <% else %>
+        <p class="text-sm text-slate-500">No Node snippet.</p>
+      <% end %>
+    </article>
+
+    <article class="panel">
+      <h2 class="panel-title text-slate-100">NestJS</h2>
+      <% if @entry.nest_equivalent.present? %>
+        <div class="mb-3"><%= format_rich_text(@entry.nest_equivalent) %></div>
+      <% end %>
+      <% if @entry.nest_code.present? %>
+        <pre class="code-block" data-lang="typescript"><code><%= @entry.nest_code %></code></pre>
+      <% else %>
+        <p class="text-sm text-slate-500">No NestJS snippet.</p>
+      <% end %>
+    </article>
+  </div>
+
+  <% if @related.any? %>
+    <aside class="panel mt-6">
+      <h2 class="panel-title">Related in <%= @entry.category.presence || "this category" %></h2>
+      <ul class="list-plain">
+        <% @related.each do |related| %>
+          <li class="list-row">
+            <%= link_to related.title, cheatsheet_entry_path(related.slug), class: "text-cyan-400 hover:text-cyan-300 transition" %>
+          </li>
+        <% end %>
+      </ul>
+    </aside>
+  <% end %>
+</section>

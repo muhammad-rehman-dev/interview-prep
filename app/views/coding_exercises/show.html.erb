@@ -1,0 +1,139 @@
+<% page_title @exercise.title %>
+
+<section class="mx-auto w-full max-w-5xl">
+  <header class="page-header flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <%= link_to "← Live coding", coding_exercises_path, class: "mb-3 inline-block text-sm text-cyan-400 hover:text-cyan-300 transition" %>
+      <h1 class="page-title"><%= @exercise.title %></h1>
+      <p class="page-lead">
+        <% parts = [] %>
+        <% parts << @exercise.category if @exercise.category.present? %>
+        <% parts << "#{@exercise.estimated_minutes} min" if @exercise.estimated_minutes.present? %>
+        <%= parts.join(" · ") %>
+      </p>
+    </div>
+    <%= difficulty_badge(@exercise.difficulty) %>
+  </header>
+
+  <% if @exercise.time_complexity.present? || @exercise.space_complexity.present? %>
+    <div class="mb-6 flex flex-wrap gap-3">
+      <% if @exercise.time_complexity.present? %>
+        <div class="rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-2">
+          <span class="block text-[0.7rem] uppercase tracking-wider text-slate-500">Time</span>
+          <code class="inline-code"><%= @exercise.time_complexity %></code>
+        </div>
+      <% end %>
+      <% if @exercise.space_complexity.present? %>
+        <div class="rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-2">
+          <span class="block text-[0.7rem] uppercase tracking-wider text-slate-500">Space</span>
+          <code class="inline-code"><%= @exercise.space_complexity %></code>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="panel" data-controller="tabs">
+    <div class="tabs" role="tablist" aria-label="Exercise sections">
+      <% [
+           ["exercise-problem", "Problem"],
+           ["exercise-requirements", "Requirements"],
+           ["exercise-hints", "Hints"],
+           ["exercise-steps", "Step-by-step"],
+           ["exercise-solution", "Solution"],
+           ["exercise-senior", "Senior tips"]
+         ].each_with_index do |(id, label), index| %>
+        <button
+          type="button"
+          id="tab-<%= id %>"
+          class="tab-btn <%= 'is-active' if index.zero? %>"
+          role="tab"
+          data-tabs-target="tab"
+          data-action="tabs#select"
+          aria-controls="<%= id %>"
+          aria-selected="<%= index.zero? %>"
+          tabindex="<%= index.zero? ? 0 : -1 %>"
+        ><%= label %></button>
+      <% end %>
+    </div>
+
+    <div
+      id="exercise-problem"
+      class="tab-panel"
+      role="tabpanel"
+      data-tabs-target="panel"
+      aria-labelledby="tab-exercise-problem"
+    >
+      <%= @exercise.problem.present? ? format_rich_text(@exercise.problem) : tag.p("No problem statement yet.", class: "text-slate-500") %>
+    </div>
+
+    <div
+      id="exercise-requirements"
+      class="tab-panel"
+      role="tabpanel"
+      data-tabs-target="panel"
+      aria-labelledby="tab-exercise-requirements"
+      hidden
+    >
+      <%= @exercise.requirements.present? ? format_rich_text(@exercise.requirements) : tag.p("No requirements listed.", class: "text-slate-500") %>
+      <% if @exercise.expected_api.present? %>
+        <h3 class="panel-title mt-4">Expected API</h3>
+        <%= format_rich_text(@exercise.expected_api) %>
+      <% end %>
+    </div>
+
+    <div
+      id="exercise-hints"
+      class="tab-panel"
+      role="tabpanel"
+      data-tabs-target="panel"
+      aria-labelledby="tab-exercise-hints"
+      hidden
+    >
+      <%= @exercise.hints.present? ? format_rich_text(@exercise.hints) : tag.p("No hints for this exercise.", class: "text-slate-500") %>
+    </div>
+
+    <div
+      id="exercise-steps"
+      class="tab-panel"
+      role="tabpanel"
+      data-tabs-target="panel"
+      aria-labelledby="tab-exercise-steps"
+      hidden
+    >
+      <%= @exercise.step_by_step.present? ? format_rich_text(@exercise.step_by_step) : tag.p("No step-by-step guide yet.", class: "text-slate-500") %>
+    </div>
+
+    <div
+      id="exercise-solution"
+      class="tab-panel"
+      role="tabpanel"
+      data-tabs-target="panel"
+      aria-labelledby="tab-exercise-solution"
+      hidden
+    >
+      <%= @exercise.complete_solution.present? ? format_rich_text(@exercise.complete_solution) : tag.p("Solution coming soon.", class: "text-slate-500") %>
+      <% if @exercise.best_practices.present? %>
+        <h3 class="panel-title mt-4">Best practices</h3>
+        <%= format_rich_text(@exercise.best_practices) %>
+      <% end %>
+    </div>
+
+    <div
+      id="exercise-senior"
+      class="tab-panel"
+      role="tabpanel"
+      data-tabs-target="panel"
+      aria-labelledby="tab-exercise-senior"
+      hidden
+    >
+      <%= @exercise.senior_improvements.present? ? format_rich_text(@exercise.senior_improvements) : tag.p("No senior tips yet.", class: "text-slate-500") %>
+    </div>
+  </div>
+
+  <% if @exercise.follow_ups.present? %>
+    <aside class="panel mt-4 border-amber-500/20">
+      <h2 class="panel-title">Interviewer follow-ups</h2>
+      <%= format_rich_text(@exercise.follow_ups) %>
+    </aside>
+  <% end %>
+</section>

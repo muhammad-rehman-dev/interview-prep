@@ -1,0 +1,35 @@
+<header class="app-topbar">
+  <button type="button" class="btn-icon sidebar-toggle" data-action="sidebar#toggle" aria-label="Open menu">
+    ☰
+  </button>
+
+  <%= form_with url: search_path, method: :get, local: true, class: "top-search", html: { role: "search" } do %>
+    <span class="top-search-icon" aria-hidden="true">/</span>
+    <%= text_field_tag :q, params[:q],
+          id: "global-search",
+          placeholder: "Search questions, topics, companies…",
+          autocomplete: "off",
+          data: { keyboard_target: "search" } %>
+    <span class="top-search-hint" aria-hidden="true">/</span>
+  <% end %>
+
+  <div class="topbar-actions">
+    <span class="kbd-hint" aria-hidden="true">
+      <span class="kbd">/</span> search
+      <span class="kbd">j</span>/<span class="kbd">k</span>
+    </span>
+
+    <button type="button"
+            class="theme-toggle"
+            data-action="dark-mode#toggle"
+            aria-label="Toggle color theme">
+      <span class="theme-toggle-icon" data-dark-mode-target="icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+      </span>
+      <span data-dark-mode-target="label">Light</span>
+    </button>
+  </div>
+</header>

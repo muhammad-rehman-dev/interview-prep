@@ -1,0 +1,74 @@
+<% related = local_assigns.fetch(:related, []) %>
+
+<div class="space-y-5">
+  <% if question.explanation.present? %>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Explanation</h3>
+      <div class="mt-2 text-sm leading-relaxed text-slate-300"><%= formatted_content(question.explanation) %></div>
+    </section>
+  <% end %>
+
+  <% if question.common_mistakes.present? %>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-amber-500/90">Common mistakes</h3>
+      <div class="mt-2 text-sm leading-relaxed text-slate-300"><%= formatted_content(question.common_mistakes) %></div>
+    </section>
+  <% end %>
+
+  <% follow_ups = question.follow_up_list %>
+  <% if follow_ups.any? %>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Follow-ups</h3>
+      <ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm text-slate-300">
+        <% follow_ups.each do |item| %>
+          <li><%= item %></li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <% if question.references_text.present? %>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">References</h3>
+      <div class="mt-2 text-sm leading-relaxed text-slate-300"><%= formatted_content(question.references_text) %></div>
+    </section>
+  <% end %>
+
+  <section class="flex flex-wrap gap-2">
+    <%= difficulty_badge(question.difficulty) %>
+    <% if question.source.present? %>
+      <span class="rounded-md border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-slate-400">Source: <%= question.source %></span>
+    <% end %>
+    <% if question.company.present? %>
+      <span class="rounded-md border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-slate-400">Company: <%= question.company %></span>
+    <% end %>
+    <% if question.interview_type.present? %>
+      <span class="rounded-md border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-slate-400"><%= question.interview_type.humanize %></span>
+    <% end %>
+  </section>
+
+  <% tags = question.tag_names %>
+  <% if tags.any? %>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tags</h3>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        <% tags.each do |tag| %>
+          <span class="rounded-full border border-slate-700/80 bg-slate-900/80 px-2.5 py-0.5 text-xs text-slate-400"><%= tag %></span>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if related.respond_to?(:any?) && related.any? %>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Related</h3>
+      <ul class="mt-2 space-y-1.5">
+        <% related.each do |related_question| %>
+          <li>
+            <%= link_to related_question.title, question_path(related_question), class: "text-sm text-cyan-400/90 hover:text-cyan-300 transition" %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+</div>

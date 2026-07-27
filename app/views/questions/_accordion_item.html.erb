@@ -1,0 +1,76 @@
+<%
+  completed = local_assigns.fetch(:completed, false)
+  bookmarked = local_assigns.fetch(:bookmarked, false)
+  panel_id = "question-panel-#{question.slug}"
+%>
+
+<article class="group">
+  <button
+    type="button"
+    class="group flex w-full items-start gap-3 px-4 py-4 text-left transition hover:bg-slate-800/40 sm:px-5 sm:py-4"
+    data-accordion-target="trigger"
+    data-action="accordion#toggle"
+    aria-expanded="false"
+    aria-controls="<%= panel_id %>"
+  >
+    <span class="mt-1.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-slate-700 text-slate-500 transition group-[.is-open]:rotate-90 group-[.is-open]:border-cyan-500/50 group-[.is-open]:text-cyan-400" aria-hidden="true">
+      <svg class="h-3 w-3" viewBox="0 0 12 12" fill="currentColor"><path d="M4.5 2.5L8 6 4.5 9.5z"/></svg>
+    </span>
+
+    <div class="min-w-0 flex-1">
+      <div class="flex flex-wrap items-center gap-2">
+        <%= difficulty_badge(question.difficulty) %>
+        <% if question.interview_type.present? %>
+          <span class="badge badge-neutral rounded-md bg-slate-800 px-2 py-0.5 text-[11px] uppercase tracking-wide text-slate-400"><%= question.interview_type.humanize %></span>
+        <% end %>
+        <% if completed %>
+          <span class="rounded-md bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-emerald-400">Done</span>
+        <% end %>
+        <% if bookmarked %>
+          <span class="rounded-md bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-400">Saved</span>
+        <% end %>
+      </div>
+      <h2 class="mt-1.5 text-base font-medium leading-snug text-slate-100 sm:text-lg"><%= question.title %></h2>
+      <p class="mt-1 text-xs text-slate-500">
+        <%= question.category&.name %>
+        <% if question.company.present? %> · <%= question.company %><% end %>
+        <% if question.estimated_minutes.present? %> · <%= question.estimated_minutes %> min<% end %>
+      </p>
+    </div>
+  </button>
+
+  <div id="<%= panel_id %>" class="border-t border-slate-800/60 bg-slate-950/40 px-4 py-5 sm:px-5" data-accordion-target="panel" hidden>
+    <% if question.body.present? %>
+      <div class="mb-5 prose-invert max-w-none text-sm leading-relaxed text-slate-300">
+        <%= formatted_content(question.body) %>
+      </div>
+    <% end %>
+
+    <div class="mb-5 rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-4">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-cyan-400">Answer</h3>
+      <div class="mt-2 text-sm leading-relaxed text-slate-200">
+        <%= formatted_content(question.best_answer.presence || question.answer) %>
+      </div>
+      <% if question.alternative_answer.present? %>
+        <h4 class="mt-4 text-xs font-semibold uppercase tracking-wider text-slate-500">Alternative framing</h4>
+        <div class="mt-2 text-sm leading-relaxed text-slate-300">
+          <%= formatted_content(question.alternative_answer) %>
+        </div>
+      <% end %>
+    </div>
+
+    <%= render "questions/details", question: question, related: question.related_questions.limit(5) %>
+
+    <div class="mt-5 flex flex-wrap items-center gap-2 border-t border-slate-800 pt-4">
+      <%= link_to "Open full page", question_path(question), class: "text-sm font-medium text-cyan-400 hover:text-cyan-300 transition" %>
+      <%= button_to (bookmarked ? "Remove bookmark" : "Bookmark"),
+            toggle_bookmark_question_path(question),
+            method: :post,
+            class: "cursor-pointer rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 hover:border-amber-500/40 hover:text-amber-300 transition" %>
+      <%= button_to (completed ? "Mark incomplete" : "Mark complete"),
+            toggle_complete_question_path(question),
+            method: :post,
+            class: "cursor-pointer rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 hover:border-emerald-500/40 hover:text-emerald-300 transition" %>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,97 @@
+# frozen_string_literal: true
+
+require_relative "../blueprint_factory"
+require_relative "../catalog"
+
+module Content
+  module Banks
+    module Javascript
+      TOPICS = [
+        "event loop phases and microtasks vs macrotasks",
+        "Promise scheduling and unhandled rejection behavior",
+        "async/await error propagation patterns",
+        "closures capturing loop variables and memory retention",
+        "prototype chain vs ES class private fields",
+        "this binding: call/apply/bind and arrow functions",
+        "Proxy and Reflect for observability wrappers",
+        "WeakMap/WeakSet/WeakRef for cache lifetimes",
+        "structuredClone vs JSON clone limitations",
+        "Transferable objects and postMessage performance",
+        "ESM vs CJS interop and circular dependencies",
+        "temporal dead zone and const/let semantics",
+        "generators and async iterators for backpressure-friendly streams",
+        "AbortController cancellation across fetch and custom work",
+        "debounce vs throttle implementation tradeoffs",
+        "deep equality and value comparison pitfalls",
+        "Map vs Object for high-churn keyed data",
+        "Symbol usage for meta-programming without collisions",
+        "immutability patterns without a library",
+        "tail call reality in engines ( practically not relied on )",
+        "numeric precision and BigInt boundaries",
+        "Intl and locale-sensitive sorting/formatting",
+        "URL and URLPattern for safe URL parsing",
+        "TextEncoder/Decoder and binary data handling",
+        "FinalizationRegistry caveats",
+        "module top-level await implications",
+        "dynamic import() code splitting on server",
+        "error.cause and error chaining",
+        "AggregateError for parallel failures",
+        "optional chaining and nullish coalescing correctness",
+        "object property order guarantees",
+        "frozen/sealed objects for defensive APIs",
+        "array methods complexity awareness (flatMap, reduce)",
+        "typed arrays and ArrayBuffer views",
+        "SharedArrayBuffer and Atomics (when available)",
+        "regex ReDoS risks in user input",
+        "JSON.parse reviver and prototype pollution",
+        "Function constructor and eval security",
+        "memory leaks from detached DOM-like listeners in SSR",
+        "event target and custom events in isomorphic code",
+        "queueMicrotask vs Promise.resolve().then",
+        "setTimeout nesting clamp and timer coalescing",
+        "performance.now for latency measurement",
+        "deterministic serialization for hashing/caching",
+        "deep clone of cyclic structures safely",
+        "iterator protocol custom collections",
+        "tagged templates for safe SQL/HTML builders",
+        "shadowing and scope chain debugging",
+        "strict mode differences that still surprise seniors",
+        "equality algorithms SameValue vs SameValueZero",
+        "numeric separators and parsing edge cases",
+        "import attributes / JSON modules awareness",
+        "worker-friendly pure function design",
+        "backpressure with async generators",
+        "idempotent retry wrappers around promises",
+        "circuit-breaker style promise gates",
+        "request coalescing / single-flight pattern",
+        "memoization invalidation strategies",
+        "feature detection vs UA sniffing",
+        "polyfill strategy and shipping modern baselines",
+        "source maps in production error triage",
+        "V8 hidden classes / shapes intuition",
+        "deoptimizing patterns (megamorphic IC)",
+        "garbage collection pressure from short-lived objects",
+        "string concatenation vs builders at scale",
+        "Set intersection/difference patterns",
+        "object rest/spread copy shallowness",
+        "null prototype objects for dictionaries",
+        "enumerability and serialization surprises",
+        "descriptor flags writable/enumerable/configurable",
+        "bind performance in hot paths",
+        "async mutex / queue in JS without threads",
+        "cooperative cancellation tokens",
+        "timeout racing with Promise.race pitfalls",
+        "allSettled vs all for fan-out APIs",
+        "any vs race semantics",
+        "structured logging fields from JS errors",
+        "defensive copying at API boundaries",
+        "domain modeling with branded primitives in JSDoc",
+        "testing time with fake timers carefully"
+      ].freeze
+
+      def self.blueprints
+        Content::BlueprintFactory.from_topics("javascript", TOPICS, per_topic: 1)
+      end
+    end
+  end
+end

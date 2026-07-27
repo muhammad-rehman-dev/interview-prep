@@ -1,0 +1,66 @@
+<% page_title @category.name %>
+
+<section class="mx-auto w-full max-w-4xl">
+  <nav class="mb-6 text-sm text-slate-500">
+    <%= link_to "Categories", categories_path, class: "hover:text-cyan-400 transition" %>
+    <span class="mx-1.5 text-slate-700">/</span>
+    <span class="text-slate-400"><%= @category.name %></span>
+  </nav>
+
+  <header class="mb-8 border-b border-slate-800 pb-6">
+    <% if @category.icon.present? %>
+      <span class="text-2xl text-cyan-400/80" aria-hidden="true"><%= @category.icon %></span>
+    <% end %>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-slate-50"><%= @category.name %></h1>
+    <% if @category.description.present? %>
+      <p class="mt-3 max-w-2xl text-sm text-slate-400 sm:text-base"><%= @category.description %></p>
+    <% end %>
+
+    <div class="mt-5 flex flex-wrap items-center gap-4">
+      <p class="text-sm text-slate-400">
+        <span class="font-medium text-slate-200"><%= @completed_count %></span>
+        of
+        <span class="font-medium text-slate-200"><%= @questions.size %></span>
+        completed
+      </p>
+      <% if @category.target_count.to_i.positive? %>
+        <div class="w-40 sm:w-56">
+          <%= progress_bar(@category.progress_percent(@completed_count)) %>
+        </div>
+      <% end %>
+      <%= link_to "Filter in question bank", questions_path(category: @category.slug), class: "text-sm text-cyan-400 hover:text-cyan-300 transition" %>
+    </div>
+  </header>
+
+  <% if @questions.any? %>
+    <ul class="divide-y divide-slate-800/80 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+      <% @questions.each do |question| %>
+        <li>
+          <%= link_to question_path(question), class: "flex items-start justify-between gap-4 px-4 py-4 transition hover:bg-slate-800/40 sm:px-5" do %>
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2">
+                <%= difficulty_badge(question.difficulty) %>
+                <% if question.interview_type.present? %>
+                  <span class="text-[11px] uppercase tracking-wide text-slate-500"><%= question.interview_type.humanize %></span>
+                <% end %>
+              </div>
+              <h2 class="mt-1.5 text-base font-medium text-slate-100"><%= question.title %></h2>
+              <% tags = question.tag_names.first(4) %>
+              <% if tags.any? %>
+                <p class="mt-1 truncate text-xs text-slate-500"><%= tags.join(" · ") %></p>
+              <% end %>
+            </div>
+            <span class="mt-1 shrink-0 text-slate-600" aria-hidden="true">→</span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <%= empty_state(
+          title: "No questions in this category",
+          body: "Questions for #{@category.name} will show up here after content is seeded.",
+          cta: "All categories",
+          href: categories_path
+        ) %>
+  <% end %>
+</section>

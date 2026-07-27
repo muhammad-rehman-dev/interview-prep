@@ -1,0 +1,61 @@
+<% page_title "Questions" %>
+<% content_for :wide_content, true %>
+
+<section class="questions-page">
+  <header class="page-header">
+    <p class="page-eyebrow">Question bank</p>
+    <h1 class="page-title">Interview questions</h1>
+    <p class="page-lead">
+      Filter by difficulty, company, and type. Expand any question to study the answer, pitfalls, and follow-ups.
+    </p>
+  </header>
+
+  <%= render "questions/filters" %>
+
+  <div class="questions-toolbar">
+    <p class="questions-count">
+      Showing
+      <span><%= @questions.size %></span>
+      of
+      <span><%= @total_count %></span>
+      · page <%= @page %> / <%= @total_pages %>
+    </p>
+    <% if params.except(:controller, :action, :commit, :page).values.any?(&:present?) %>
+      <%= link_to "Clear filters", questions_path, class: "text-sm text-cyan-400 hover:text-cyan-300 transition" %>
+    <% end %>
+  </div>
+
+  <% if @questions.any? %>
+    <div
+      class="questions-list"
+      data-controller="accordion"
+      data-accordion-exclusive="true"
+    >
+      <% @questions.each do |question| %>
+        <%= render "questions/accordion_item",
+                   question: question,
+                   completed: @completed_ids.include?(question.id),
+                   bookmarked: @bookmarked_ids.include?(question.id) %>
+      <% end %>
+    </div>
+
+    <% if @total_pages > 1 %>
+      <nav class="questions-pagination" aria-label="Pagination">
+        <% query = request.query_parameters.except("page") %>
+        <%= link_to "Previous",
+                    questions_path(query.merge(page: @page - 1)),
+                    class: "btn btn-secondary #{'is-disabled' if @page <= 1}" %>
+        <%= link_to "Next",
+                    questions_path(query.merge(page: @page + 1)),
+                    class: "btn btn-secondary #{'is-disabled' if @page >= @total_pages}" %>
+      </nav>
+    <% end %>
+  <% else %>
+    <%= empty_state(
+          title: "No questions match",
+          body: "Try clearing filters or searching with a broader term.",
+          cta: "Reset filters",
+          href: questions_path
+        ) %>
+  <% end %>
+</section>

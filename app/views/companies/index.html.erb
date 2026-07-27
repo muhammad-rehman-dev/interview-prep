@@ -1,0 +1,39 @@
+<% page_title "Company previous questions" %>
+
+<section class="companies-page">
+  <header class="page-header">
+    <p class="page-eyebrow">Company tracks</p>
+    <h1 class="page-title">Previous interview questions</h1>
+    <p class="page-lead">
+      Company-specific banks compiled from public job specs, hiring guidance, and commonly reported
+      technical rounds. Start with a company, then drill into questions with senior-level answers.
+    </p>
+  </header>
+
+  <% if @companies.any? %>
+    <div class="company-grid">
+      <% @companies.each do |company| %>
+        <%= link_to company_path(company), class: "company-card" do %>
+          <div class="company-card-head">
+            <h2><%= company.name %></h2>
+            <span class="badge badge-neutral"><%= company.company_questions.size %></span>
+          </div>
+          <% if company.tagline.present? %>
+            <p class="company-card-tagline"><%= company.tagline %></p>
+          <% end %>
+          <% if company.description.present? %>
+            <p class="company-card-body"><%= truncate(company.description, length: 180) %></p>
+          <% end %>
+          <p class="company-card-meta"><%= company.interview_focus %></p>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= empty_state(
+          title: "No company tracks yet",
+          body: "Run bin/rails content:seed_companies to load Wizdaa and other tracks.",
+          cta: "Back to dashboard",
+          href: dashboard_path
+        ) %>
+  <% end %>
+</section>

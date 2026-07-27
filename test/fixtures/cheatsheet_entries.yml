@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  slug: MyString
+  rails_concept: MyText
+  rails_explanation: MyText
+  node_equivalent: MyText
+  nest_equivalent: MyText
+  rails_code: MyText
+  node_code: MyText
+  nest_code: MyText
+  category: MyString
+  position: 1
+
+two:
+  title: MyString
+  slug: MyString
+  rails_concept: MyText
+  rails_explanation: MyText
+  node_equivalent: MyText
+  nest_equivalent: MyText
+  rails_code: MyText
+  node_code: MyText
+  nest_code: MyText
+  category: MyString
+  position: 1

@@ -1,0 +1,54 @@
+<% page_title "Flashcards" %>
+
+<section class="mx-auto w-full max-w-2xl">
+  <header class="page-header">
+    <p class="page-eyebrow">Drill</p>
+    <h1 class="page-title">Flashcards</h1>
+    <p class="page-lead">Flip to check your answer, then advance to the next card.</p>
+  </header>
+
+  <% if @question.present? %>
+    <div data-controller="flashcard">
+      <button
+        type="button"
+        class="flashcard w-full text-left"
+        data-flashcard-target="card"
+        data-action="click->flashcard#flip"
+        aria-pressed="false"
+        aria-label="Flip flashcard"
+      >
+        <div class="flashcard-inner">
+          <div class="flashcard-face flashcard-front flex-col gap-3">
+            <span class="text-[0.7rem] uppercase tracking-[0.16em] text-cyan-400/80">Question</span>
+            <h2 class="text-xl font-semibold tracking-tight text-slate-50"><%= @question.title %></h2>
+            <div class="flex flex-wrap items-center justify-center gap-2">
+              <%= difficulty_badge(@question.difficulty) %>
+              <% if @question.category %>
+                <span class="filter-chip"><%= @question.category.name %></span>
+              <% end %>
+            </div>
+            <p class="text-sm text-slate-500">Click to reveal answer</p>
+          </div>
+          <div class="flashcard-face flashcard-back flex-col gap-3 overflow-auto">
+            <span class="text-[0.7rem] uppercase tracking-[0.16em] text-amber-400/80">Answer</span>
+            <div class="w-full text-left text-sm text-slate-200">
+              <%= format_rich_text(@question.best_answer.presence || @question.answer.presence || "No answer stored for this card.") %>
+            </div>
+          </div>
+        </div>
+      </button>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <%= button_to "Next card", next_flashcards_path, method: :post, class: "btn btn-primary" %>
+        <button type="button" class="btn btn-ghost" data-action="flashcard#flip">Flip</button>
+      </div>
+    </div>
+  <% else %>
+    <%= empty_state(
+          title: "No flashcards ready",
+          body: "Add questions to the bank to start a flip deck.",
+          cta: "Browse questions",
+          href: questions_path
+        ) %>
+  <% end %>
+</section>

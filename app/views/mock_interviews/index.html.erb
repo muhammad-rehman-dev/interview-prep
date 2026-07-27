@@ -1,0 +1,39 @@
+<% page_title "Mock Interviews" %>
+
+<section class="mx-auto w-full max-w-5xl">
+  <header class="page-header flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <p class="page-eyebrow">Simulate</p>
+      <h1 class="page-title">Mock interviews</h1>
+      <p class="page-lead">Full 60–90 minute loops with theory, coding, architecture, and behavioral sections.</p>
+    </div>
+    <%= link_to "Start live session", mock_session_path, class: "btn btn-primary" %>
+  </header>
+
+  <% if @mock_interviews.any? %>
+    <ul class="list-plain divide-y divide-slate-800 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+      <% @mock_interviews.each do |mock| %>
+        <li>
+          <%= link_to mock_interview_path(mock.slug), class: "list-row px-4 py-4 transition hover:bg-slate-900/70" do %>
+            <div class="min-w-0">
+              <h2 class="text-base font-medium text-slate-100"><%= mock.title %></h2>
+              <p class="mt-1 text-sm text-slate-500">
+                <%= mock.duration_minutes || 75 %> min
+                <% if mock.company_focus.present? %> · <%= mock.company_focus %><% end %>
+                · <%= pluralize(mock.mock_interview_items.size, "section") %>
+              </p>
+            </div>
+            <%= difficulty_badge(mock.difficulty) %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <%= empty_state(
+          title: "No mock interviews yet",
+          body: "Seed content to unlock full interview timelines, or try a quick live session.",
+          cta: "Open live session",
+          href: mock_session_path
+        ) %>
+  <% end %>
+</section>

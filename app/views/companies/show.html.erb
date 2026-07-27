@@ -1,0 +1,44 @@
+<% page_title "#{@company.name} interview questions" %>
+
+<section class="company-show">
+  <header class="page-header">
+    <p class="page-eyebrow">
+      <%= link_to "Companies", companies_path, class: "text-cyan-400/80 hover:text-cyan-300" %>
+      · Previous questions
+    </p>
+    <h1 class="page-title"><%= @company.name %></h1>
+    <% if @company.tagline.present? %>
+      <p class="company-tagline"><%= @company.tagline %></p>
+    <% end %>
+    <% if @company.description.present? %>
+      <p class="page-lead"><%= @company.description %></p>
+    <% end %>
+    <div class="company-meta-row">
+      <span class="badge badge-type"><%= @questions.size %> questions</span>
+      <% if @company.website.present? %>
+        <%= link_to "Company site", @company.website, class: "btn btn-secondary", target: "_blank", rel: "noopener" %>
+      <% end %>
+    </div>
+  </header>
+
+  <p class="source-note">
+    Sources include Wizdaa public NestJS/Node senior role requirements, AI-first assessment guidance from leadership,
+    and standard Back-End Technical Interview themes for Node.js / Nest.js. Public Glassdoor dumps for Wizdaa are sparse
+    (often conflated with other “Wiz*” companies)—answers are written to the published hiring bar.
+  </p>
+
+  <% if @questions.any? %>
+    <div class="questions-list">
+      <% @questions.each do |question| %>
+        <%= render "companies/question_item", company: @company, question: question %>
+      <% end %>
+    </div>
+  <% else %>
+    <%= empty_state(
+          title: "No questions for #{@company.name}",
+          body: "Seed company content to populate this track.",
+          cta: "All companies",
+          href: companies_path
+        ) %>
+  <% end %>
+</section>

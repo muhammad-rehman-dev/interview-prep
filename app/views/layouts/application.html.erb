@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" data-theme="dark">
+  <head>
+    <title><%= content_for(:title) || "BackendForge · Senior Backend Interview Prep" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="BackendForge — senior backend interview prep for Node, Nest, SQL, system design, and more.">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("bf-theme") || "dark";
+          var dark = t !== "light";
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.classList.toggle("light", !dark);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        } catch (e) {}
+      })();
+    </script>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body data-controller="dark-mode keyboard<%= ' sidebar' if app_shell? %>">
+    <% if app_shell? %>
+      <div class="app-shell" data-sidebar-target="shell">
+        <div class="sidebar-backdrop" data-action="click->sidebar#close" aria-hidden="true"></div>
+        <%= render "shared/sidebar" %>
+
+        <div class="app-main">
+          <%= render "shared/topbar" %>
+          <div class="app-content <%= 'app-content-wide' if content_for?(:wide_content) %>">
+            <%= render "shared/flash" %>
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <%= yield %>
+    <% end %>
+  </body>
+</html>

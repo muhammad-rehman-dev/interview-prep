@@ -1,0 +1,48 @@
+<aside class="app-sidebar" aria-label="Primary">
+  <%= link_to root_path, class: "app-brand" do %>
+    <span class="app-brand-mark">Backend</span>Forge
+  <% end %>
+
+  <nav class="app-nav" aria-label="Main">
+    <p class="nav-section-label">Learn</p>
+    <%= nav_link_to "Dashboard", dashboard_path, icon: "◆" %>
+    <%= nav_link_to "Questions", questions_path, icon: "Q" %>
+    <%= nav_link_to "Categories", categories_path, icon: "≡" %>
+    <%= nav_link_to "Live Coding", coding_exercises_path, icon: "{}" %>
+    <%= nav_link_to "Mock Interviews", mock_interviews_path, icon: "◎" %>
+
+    <p class="nav-section-label">Companies</p>
+    <div class="nav-submenu" data-controller="nav-submenu" data-nav-submenu-open-value="<%= companies_nav_open? %>">
+      <button type="button"
+              class="nav-link nav-submenu-toggle <%= 'nav-link-active' if companies_nav_open? %>"
+              data-action="nav-submenu#toggle"
+              data-nav-submenu-target="button"
+              aria-expanded="<%= companies_nav_open? %>">
+        <span class="nav-icon" aria-hidden="true">▣</span>
+        <span>Previous questions</span>
+        <span class="nav-submenu-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="nav-submenu-panel" data-nav-submenu-target="panel" <%= "hidden" unless companies_nav_open? %>>
+        <%= link_to "All companies", companies_path, class: "nav-sublink #{'nav-sublink-active' if current_page?(companies_path)}" %>
+        <% Company.ordered.each do |company| %>
+          <%= link_to company.name,
+                      company_path(company),
+                      class: "nav-sublink #{'nav-sublink-active' if company_nav_active?(company)}" %>
+        <% end %>
+      </div>
+    </div>
+
+    <p class="nav-section-label">Practice</p>
+    <%= nav_link_to "Flashcards", flashcards_path, icon: "▭" %>
+    <%= nav_link_to "Quiz", quiz_path, icon: "?" %>
+    <%= nav_link_to "Rails→Node Cheatsheet", cheatsheet_path, icon: "⇄" %>
+    <%= nav_link_to "Search", search_path, icon: "/" %>
+  </nav>
+
+  <div style="margin-top: auto; padding: 0.5rem 0.65rem; font-size: 0.75rem; color: var(--bf-text-faint);">
+    <span class="kbd-hint" data-keyboard-target="hints">
+      <span class="kbd">/</span> search
+      <span class="kbd">j</span>/<span class="kbd">k</span> move
+    </span>
+  </div>
+</aside>

@@ -1,0 +1,123 @@
+<% page_title @query.present? ? "Search: #{@query}" : "Search" %>
+
+<section class="mx-auto w-full max-w-3xl">
+  <header class="mb-8">
+    <p class="text-xs font-medium uppercase tracking-[0.2em] text-cyan-400/80">Global search</p>
+    <h1 class="mt-2 text-3xl font-semibold tracking-tight text-slate-50">Search</h1>
+    <p class="mt-2 text-sm text-slate-400">Find questions, coding exercises, mock interviews, and cheatsheet entries.</p>
+  </header>
+
+  <%= form_with url: search_path, method: :get, local: true, class: "mb-10" do %>
+    <div class="flex flex-col gap-3 sm:flex-row">
+      <%= text_field_tag :q, @query,
+            autofocus: true,
+            placeholder: "Search BackendForge…",
+            class: "w-full flex-1 rounded-xl border border-slate-700 bg-slate-900/60 px-4 py-3 text-base text-slate-100 placeholder:text-slate-600 focus:border-cyan-500/60 focus:outline-none focus:ring-1 focus:ring-cyan-500/40" %>
+      <%= submit_tag "Search", class: "cursor-pointer rounded-xl bg-cyan-500 px-5 py-3 text-sm font-medium text-slate-950 hover:bg-cyan-400 transition sm:w-auto" %>
+    </div>
+  <% end %>
+
+  <% if @query.blank? %>
+    <%= empty_state(
+          title: "Start typing to search",
+          body: "Try a topic like “N+1”, “rate limiting”, or “idempotency”. Results span the full curriculum.",
+          cta: "Browse questions",
+          href: questions_path
+        ) %>
+  <% else %>
+    <% total = @questions.size + @exercises.size + @mocks.size + @cheatsheets.size %>
+
+    <% if total.zero? %>
+      <%= empty_state(
+            title: "No results for “#{@query}”",
+            body: "Nothing matched across questions, exercises, mocks, or cheatsheets. Try a shorter keyword.",
+            cta: "Clear search",
+            href: search_path
+          ) %>
+    <% else %>
+      <p class="mb-6 text-sm text-slate-400">
+        <span class="font-medium text-slate-200"><%= total %></span>
+        <%= "result".pluralize(total) %> for
+        <span class="text-slate-200">“<%= @query %>”</span>
+      </p>
+
+      <% if @questions.any? %>
+        <section class="mb-8">
+          <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Questions</h2>
+          <ul class="divide-y divide-slate-800/80 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+            <% @questions.each do |question| %>
+              <li>
+                <%= link_to question_path(question), class: "block px-4 py-3.5 transition hover:bg-slate-800/40 sm:px-5" do %>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <%= difficulty_badge(question.difficulty) %>
+                    <% if question.category %>
+                      <span class="text-xs text-slate-500"><%= question.category.name %></span>
+                    <% end %>
+                  </div>
+                  <p class="mt-1 font-medium text-slate-100"><%= question.title %></p>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <% if @exercises.any? %>
+        <section class="mb-8">
+          <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Coding exercises</h2>
+          <ul class="divide-y divide-slate-800/80 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+            <% @exercises.each do |exercise| %>
+              <li>
+                <%= link_to coding_exercise_path(exercise), class: "flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-slate-800/40 sm:px-5" do %>
+                  <div>
+                    <p class="font-medium text-slate-100"><%= exercise.title %></p>
+                    <p class="mt-0.5 text-xs text-slate-500"><%= [exercise.difficulty&.humanize, exercise.category].compact.join(" · ") %></p>
+                  </div>
+                  <span class="text-slate-600" aria-hidden="true">→</span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <% if @mocks.any? %>
+        <section class="mb-8">
+          <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Mock interviews</h2>
+          <ul class="divide-y divide-slate-800/80 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+            <% @mocks.each do |mock| %>
+              <li>
+                <%= link_to mock_interview_path(mock), class: "flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-slate-800/40 sm:px-5" do %>
+                  <div>
+                    <p class="font-medium text-slate-100"><%= mock.title %></p>
+                    <p class="mt-0.5 text-xs text-slate-500"><%= [mock.difficulty&.humanize, mock.company_focus].compact.join(" · ") %></p>
+                  </div>
+                  <span class="text-slate-600" aria-hidden="true">→</span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <% if @cheatsheets.any? %>
+        <section class="mb-8">
+          <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">Cheatsheet</h2>
+          <ul class="divide-y divide-slate-800/80 overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40">
+            <% @cheatsheets.each do |entry| %>
+              <li>
+                <%= link_to cheatsheet_entry_path(entry), class: "flex items-center justify-between gap-3 px-4 py-3.5 transition hover:bg-slate-800/40 sm:px-5" do %>
+                  <div>
+                    <p class="font-medium text-slate-100"><%= entry.title %></p>
+                    <p class="mt-0.5 text-xs text-slate-500"><%= entry.category.presence || "General" %></p>
+                  </div>
+                  <span class="text-slate-600" aria-hidden="true">→</span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+    <% end %>
+  <% end %>
+</section>

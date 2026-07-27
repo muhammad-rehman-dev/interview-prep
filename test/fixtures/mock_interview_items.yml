@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mock_interview: one
+  section: MyString
+  prompt: MyText
+  expected_answer: MyText
+  follow_ups: MyText
+  duration_minutes: 1
+  position: 1
+
+two:
+  mock_interview: two
+  section: MyString
+  prompt: MyText
+  expected_answer: MyText
+  follow_ups: MyText
+  duration_minutes: 1
+  position: 1
